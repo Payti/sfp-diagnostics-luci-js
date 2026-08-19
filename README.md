@@ -13,10 +13,21 @@ Rozszerzenie LuCI dla OpenWrt 25.12 przeznaczone dla Banana Pi BPi-R3. Dodaje st
 - ręczne i automatyczne odświeżanie danych,
 - tłumaczenie interfejsu na język angielski.
 
+## Wersja v4
+
+Wersja v4 jest przepisana z wcześniejszej wersji Lua do JavaScript. Backend korzysta z tekstowego wyjścia `ethtool -m`, więc działa z oficjalnymi wersjami `ethtool` bez konieczności stosowania patcha JSON. Parser przetwarza między innymi dane producenta, parametry DDM, długości światłowodu, opcje oraz alarmy.
+
+Historia projektu:
+
+- v1: wcześniejsza wersja Lua dla OpenWrt 23.05,
+- v2: wersja JavaScript wymagająca `ethtool --json -m`,
+- v3: parser tekstowego wyjścia `ethtool -m` i tłumaczenie angielskie,
+- v4: wykresy TX/RX/temperatury oraz dalsze poprawki obsługi różnych modułów SFP.
+
 ## Wymagania
 
 - Banana Pi BPi-R3 z OpenWrt 25.12,
-- LuCI i `rpcd`,
+- pakiety `rpcd-mod-ucode`, `luci-mod-admin-full` i `libc`,
 - dostępne polecenie `ethtool` z obsługą `ethtool -m`,
 - zamontowany debugfs (`/sys/kernel/debug`),
 - interfejsy nazwane `sfp1` i `sfp2`.
@@ -29,6 +40,37 @@ ethtool -m sfp1
 ip link show sfp1
 mount | grep debugfs
 ```
+
+## Instalacja APK
+
+Dla OpenWrt 25.12 można użyć gotowego pakietu APK dla BPi-R3. Pakiet zawiera ten sam widok JavaScript i backend RPCD, które są obecne w tym repozytorium.
+
+```sh
+apk update
+apk add rpcd-mod-ucode luci-mod-admin-full libc
+cd /tmp
+wget https://dl.eko.one.pl/test/sfp-diagnostics-luci-js-4-r1.apk
+apk add --allow-untrusted /tmp/sfp-diagnostics-luci-js-4-r1.apk
+apk add ethtool-full
+rm -rf /tmp/luci-modulecache
+/etc/init.d/rpcd restart
+```
+
+Po instalacji strona jest dostępna w **LuCI -> Network -> SFP** (lub **LuCI -> Sieć -> SFP**).
+
+Gotowy pakiet v4: [sfp-diagnostics-luci-js-4-r1.apk](https://dl.eko.one.pl/test/sfp-diagnostics-luci-js-4-r1.apk).
+
+### Opcjonalny ethtool 6.3
+
+Standardowy `ethtool-full` z repozytorium OpenWrt wystarcza do wersji v4, ponieważ parser używa tekstowego outputu. Opcjonalnie można użyć patchowanego `ethtool 6.3`, który udostępnia także `ethtool --json -m` i może pokazywać więcej informacji dla wybranych modułów:
+
+```sh
+apk del ethtool-full
+apk del ethtool
+apk add --allow-untrusted /tmp/ethtool-full-bin-6.3-r1.apk
+```
+
+Nie należy instalować obu wariantów jednocześnie. Wersja patchowana jest przeznaczona dla BPi-R3 i nie jest wymagana przez parser znajdujący się w tym repozytorium.
 
 ## Instalacja
 
@@ -68,6 +110,37 @@ echo '{"interface":"sfp1"}' | /usr/libexec/rpcd/sfp call status
 ```
 
 Puste dane `ethtool` są zwracane jako `{}`. Oznacza to zwykle brak modułu, brak obsługi odczytu EEPROM albo nieprawidłową nazwę interfejsu.
+
+## Screenshoty
+
+Screeny pochodzą z testów na Banana Pi BPi-R3 z OpenWrt 25.12:
+
+| SFP1: DDM i wykresy | SFP1: specyfikacja |
+| --- | --- |
+| ![SFP1 DDM](screenshots/sfp-0.png) | ![Specyfikacja](screenshots/sfp-1.png) |
+
+| SFP1: ukryte wykresy | English UI |
+| --- | --- |
+| ![Ukryte wykresy](screenshots/sfp-2.png) | ![English UI](screenshots/sfp-3.png) |
+
+| SFP2: brak modułu |
+| --- |
+| ![Brak modułu SFP2](screenshots/sfp-4.png) |
+
+## Kompatybilność i konfiguracja
+
+Pakiet został przetestowany na Banana Pi BPi-R3 z OpenWrt 25.12. W przypadku innego routera należy dopasować `/etc/sfp.json` do nazw interfejsów i ścieżek debugfs danego urządzenia. Przykładowa konfiguracja w tym repozytorium definiuje `sfp1` i `sfp2`:
+
+```json
+{
+	"sfp": {
+		"sfp1": { "debugfs": "/sys/kernel/debug/sfp-1/" },
+		"sfp2": { "debugfs": "/sys/kernel/debug/sfp-2/" }
+	}
+}
+```
+
+Źródło dodatkowych informacji, wyników testów i historii projektu: [wpis na forum eko.one.pl](https://eko.one.pl/forum/viewtopic.php?pid=330336#p330336).
 
 ## Struktura
 
