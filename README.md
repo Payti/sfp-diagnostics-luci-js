@@ -58,11 +58,23 @@ rm -rf /tmp/luci-modulecache
 
 Po instalacji strona jest dostępna w **LuCI -> Network -> SFP** (lub **LuCI -> Sieć -> SFP**).
 
-Gotowy pakiet v4: [sfp-diagnostics-luci-js-4-r1.apk](https://dl.eko.one.pl/test/sfp-diagnostics-luci-js-4-r1.apk).
+## Pobieranie
+
+Gotowy pakiet v4 dla Banana Pi BPi-R3 jest dostępny z dwóch mirrorów:
+
+| Plik | Mirror 1 | Mirror 2 |
+| --- | --- | --- |
+| `sfp-diagnostics-luci-js-4-r1.apk` | [dl.eko.one.pl](https://dl.eko.one.pl/test/sfp-diagnostics-luci-js-4-r1.apk) | [ns3274274.ip-5-39-87.eu](https://ns3274274.ip-5-39-87.eu/sfp/apk/sfp-diagnostics-luci-js-4-r1.apk) |
+
+Opcjonalny, patchowany `ethtool 6.3` dla BPi-R3, z obsługą `ethtool --json -m`, również ma dwa mirrory:
+
+| Plik | Mirror 1 | Mirror 2 |
+| --- | --- | --- |
+| `ethtool-full-bin-6.3-r1.apk` | [dl.eko.one.pl](https://dl.eko.one.pl/test/ethtool-full-bin-6.3-r1.apk) | [ns3274274.ip-5-39-87.eu](https://ns3274274.ip-5-39-87.eu/sfp/apk/ethtool-full-bin-6.3-r1.apk) |
 
 ### Opcjonalny ethtool 6.3
 
-Standardowy `ethtool-full` z repozytorium OpenWrt wystarcza do wersji v4, ponieważ parser używa tekstowego outputu. Opcjonalnie można użyć patchowanego `ethtool 6.3`, który udostępnia także `ethtool --json -m` i może pokazywać więcej informacji dla wybranych modułów:
+Standardowy `ethtool-full` z repozytorium OpenWrt wystarcza do wersji v4, ponieważ parser używa tekstowego outputu. Opcjonalnie można użyć patchowanego `ethtool 6.3`, który udostępnia także `ethtool --json -m` i może pokazywać więcej informacji dla wybranych modułów. Przed instalacją pobierz plik `ethtool-full-bin-6.3-r1.apk` z jednego z dwóch mirrorów powyżej i skopiuj go do `/tmp`.
 
 ```sh
 apk del ethtool-full
