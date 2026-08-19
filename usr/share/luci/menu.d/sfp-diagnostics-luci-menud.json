@@ -1,0 +1,15 @@
+{
+        "admin/network/sfp": {
+                "title": "SFP",
+                "order": 12,
+                "action": {
+                        "type": "view",
+                        "path": "network/sfp"
+                },
+                "depends": {
+                        "acl": [
+                                "sfp-diagnostics-luci"
+                        ]
+                }
+        }
+}

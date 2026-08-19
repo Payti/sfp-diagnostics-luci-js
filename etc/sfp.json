@@ -1,0 +1,6 @@
+{
+	"sfp": {
+		"sfp1": { "debugfs": "/sys/kernel/debug/sfp-1/" },
+		"sfp2": { "debugfs": "/sys/kernel/debug/sfp-2/" }
+	}
+}

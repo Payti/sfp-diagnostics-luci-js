@@ -1,0 +1,82 @@
+#!/bin/sh
+. /lib/functions.sh
+
+get_sfp_status() {
+    local dev="$1"
+    local raw=$(ethtool -m "$dev" 2>/dev/null)
+    
+    if [ -z "$raw" ]; then
+        echo "{}"
+        return
+    fi
+
+    parse_val() {
+        echo "$raw" | grep -i "$1" | head -n 1 | cut -d':' -f2- | sed 's/^[ \t]*//;s/[ \t]*$//'
+    }
+
+    local br_nom=$(echo "$raw" | grep -Ei "BR,? Nominal" | head -n 1 | cut -d':' -f2- | sed 's/MBd//;s/Mbps//;s/[ \t]*//g')
+
+    local tx_raw=$(echo "$raw" | grep -i "Laser output power" | head -n 1 | cut -d':' -f2-)
+    local rx_raw=$(echo "$raw" | grep -i "Receiver signal average optical power" | head -n 1 | cut -d':' -f2-)
+
+    local tx_mw=$(echo "$tx_raw" | cut -d'/' -f1 | sed 's/mW//;s/[ \t]*//g')
+    local tx_dbm=$(echo "$tx_raw" | cut -d'/' -f2 | sed 's/dBm//;s/[ \t]*//g')
+    local rx_mw=$(echo "$rx_raw" | cut -d'/' -f1 | sed 's/mW//;s/[ \t]*//g')
+    local rx_dbm=$(echo "$rx_raw" | cut -d'/' -f2 | sed 's/dBm//;s/[ \t]*//g')
+
+    # POBIERANIE WPROST TEGO CO DAJE ETHTOOL
+    local smf_km=$(parse_val "Length (SMF,km)")
+    local smf_m=$(parse_val "Length (SMF)")
+
+    local options=$(echo "$raw" | grep -i "Option" | grep "implemented" | cut -d':' -f2- | sed 's/^[ \t]*//' | tr '\n' ',' | sed 's/,$//')
+    local alarms=$(echo "$raw" | grep -Ei "alarm|warning" | grep -i ": On" | cut -d':' -f1 | sed 's/^[ \t]*//' | tr '\n' ',' | sed 's/,$//')
+    local transceiver=$(echo "$raw" | grep -i "Transceiver type" | cut -d':' -f2- | sed 's/^[ \t]*//')
+
+    cat <<EOF
+{
+    "vendor_name": "$(parse_val "Vendor name")",
+    "vendor_pn": "$(parse_val "Vendor PN")",
+    "vendor_sn": "$(parse_val "Vendor SN")",
+    "vendor_rev": "$(parse_val "Vendor rev")",
+    "vendor_oui": "$(parse_val "Vendor OUI")",
+    "date_code": "$(parse_val "Date code")",
+    "identifier_description": "$(parse_val "Identifier")",
+    "connector_description": "$(parse_val "Connector")",
+    "encoding_description": "$(parse_val "Encoding")",
+    "laser_wavelength": "$(parse_val "Laser wavelength")",
+    "bitrate_nominal": "$br_nom",
+    "module_temp": "$(parse_val "Module temperature" | cut -d' ' -f1)",
+    "module_voltage": "$(parse_val "Module voltage" | sed 's/V//;s/[ \t]*//g')",
+    "bias_current": "$(parse_val "Laser bias current" | sed 's/mA//;s/[ \t]*//g')",
+    "tx_power": "$tx_mw",
+    "tx_power_dbm": "$tx_dbm",
+    "rx_power": "$rx_mw",
+    "rx_power_dbm": "$rx_dbm",
+    "smf_km": "$smf_km",
+    "smf_m": "$smf_m",
+    "transceiver_type": "$transceiver",
+    "options": "$options",
+    "active_alarms": "$alarms"
+}
+EOF
+}
+
+case "$1" in
+    list) echo '{ "status": { "interface": "string" } }' ;;
+    call)
+        case "$2" in
+            status)
+                read -r input
+                interface=$(echo "$input" | sed -n 's/.*"interface":"\([^"]*\)".*/\1/p')
+                if [ "$interface" = "sfp1" ] || [ "$interface" = "sfp2" ]; then
+                    link_up=$(ip link show "$interface" 2>/dev/null | grep -q "LOWER_UP" && echo true || echo false)
+                    echo "{ \"$interface\": { \"ethtool\": $(get_sfp_status "$interface"), \"status\": { \"link_up\": $link_up } } }"
+                else
+                    s1_link=$(ip link show sfp1 2>/dev/null | grep -q "LOWER_UP" && echo true || echo false)
+                    s2_link=$(ip link show sfp2 2>/dev/null | grep -q "LOWER_UP" && echo true || echo false)
+                    echo "{ \"sfp1\": { \"ethtool\": $(get_sfp_status "sfp1"), \"status\": { \"link_up\": $s1_link } }, \"sfp2\": { \"ethtool\": $(get_sfp_status "sfp2"), \"status\": { \"link_up\": $s2_link } } }"
+                fi
+            ;;
+        esac
+    ;;
+esac

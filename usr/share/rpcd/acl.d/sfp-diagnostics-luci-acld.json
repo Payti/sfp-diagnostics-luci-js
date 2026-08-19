@@ -1,0 +1,13 @@
+{
+	"sfp-diagnostics-luci": {
+		"description": "Grant access to sfp ubus service",
+		"write": {
+			"ubus": {
+				"sfp": [
+					"status",
+					"interfaces"
+				]
+			}
+		}
+	}
+}
