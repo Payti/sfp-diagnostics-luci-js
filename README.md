@@ -72,6 +72,39 @@ Opcjonalny, patchowany `ethtool 6.3` dla BPi-R3, z obsługą `ethtool --json -m`
 | --- | --- | --- |
 | `ethtool-full-bin-6.3-r1.apk` | [ethtool-full-bin-6.3-r1.apk](https://dl.eko.one.pl/test/ethtool-full-bin-6.3-r1.apk) | [ethtool-full-bin-6.3-r1.apk](https://ns3274274.ip-5-39-87.eu/sfp/apk/ethtool-full-bin-6.3-r1.apk) |
 
+## Budowanie z feeda OpenWrt
+
+Repozytorium zawiera definicję pakietu w katalogu `sfp-diagnostics-luci-js/Makefile`, dlatego można dodać je bezpośrednio jako własny feed do drzewa OpenWrt 25.12.
+
+W pliku `feeds.conf` albo `feeds.conf.default` dodaj:
+
+```text
+src-git sfp https://github.com/Payti/sfp-diagnostics-luci-js.git
+```
+
+Następnie w głównym katalogu źródeł OpenWrt wykonaj:
+
+```sh
+./scripts/feeds update sfp
+./scripts/feeds install sfp-diagnostics-luci-js
+make menuconfig
+```
+
+W `menuconfig` wybierz **LuCI -> Applications -> sfp-diagnostics-luci-js** jako `M` albo `[*]`, a potem uruchom kompilację:
+
+```sh
+make defconfig
+make package/sfp-diagnostics-luci-js/compile V=s
+```
+
+Gotowy pakiet APK znajdzie się w katalogu `bin/packages/` dla wybranej architektury. Można go wyszukać poleceniem:
+
+```sh
+find bin/packages -type f -name 'sfp-diagnostics-luci-js*.apk'
+```
+
+Makefile automatycznie deklaruje zależności `rpcd-mod-ucode`, `luci-mod-admin-full`, `libc` i `ethtool-full`. Domyślnie pobierany jest oficjalny kod tego repozytorium z przypiętego commita, a wynikowy pakiet zawiera backend RPCD, ACL, wpis menu, konfigurację i widok JavaScript.
+
 ### Opcjonalny ethtool 6.3
 
 Standardowy `ethtool-full` z repozytorium OpenWrt wystarcza do wersji v4, ponieważ parser używa tekstowego outputu. Opcjonalnie można użyć patchowanego `ethtool 6.3`, który udostępnia także `ethtool --json -m` i może pokazywać więcej informacji dla wybranych modułów. Przed instalacją pobierz plik `ethtool-full-bin-6.3-r1.apk` z jednego z dwóch mirrorów powyżej i skopiuj go do `/tmp`.
