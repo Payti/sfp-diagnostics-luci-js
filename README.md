@@ -60,13 +60,13 @@ Po instalacji strona jest dostępna w **LuCI -> Network -> SFP** (lub **LuCI -> 
 
 ## Pobieranie
 
-Gotowy pakiet v4 dla Banana Pi BPi-R3 jest dostępny z dwóch mirrorów:
+Gotowy pakiet v4 dla Banana Pi BPi-R3 jest dostępny także z dwóch mirrorów:
 
 | Plik | Mirror 1 | Mirror 2 |
 | --- | --- | --- |
 | `sfp-diagnostics-luci-js-4-r1.apk` | [sfp-diagnostics-luci-js-4-r1.apk](https://dl.eko.one.pl/test/sfp-diagnostics-luci-js-4-r1.apk) | [sfp-diagnostics-luci-js-4-r1.apk](https://ns3274274.ip-5-39-87.eu/sfp/apk/sfp-diagnostics-luci-js-4-r1.apk) |
 
-Opcjonalny, patchowany `ethtool 6.3` dla BPi-R3, z obsługą `ethtool --json -m`, również ma dwa mirrory:
+Opcjonalny, patchowany `ethtool 6.3` dla BPi-R3, z obsługą `ethtool --json -m`, również dostępny z dwóch mirrorów:
 
 | Plik | Mirror 1 | Mirror 2 |
 | --- | --- | --- |
