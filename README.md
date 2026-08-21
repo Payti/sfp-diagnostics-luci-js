@@ -107,7 +107,7 @@ Makefile automatycznie deklaruje zależności `rpcd-mod-ucode`, `luci-mod-admin-
 
 ### Opcjonalny ethtool 6.3
 
-Standardowy `ethtool-full` z repozytorium OpenWrt wystarcza do wersji v4, ponieważ parser używa tekstowego outputu. Opcjonalnie można użyć patchowanego `ethtool 6.3`, który udostępnia także `ethtool --json -m` i może pokazywać więcej informacji dla wybranych modułów. Przed instalacją pobierz plik `ethtool-full-bin-6.3-r1.apk` z jednego z dwóch mirrorów powyżej i skopiuj go do `/tmp`.
+Standardowy `ethtool-full` z repozytorium OpenWrt wystarcza do wersji v4, ponieważ parser używa tekstowego outputu. Opcjonalnie można użyć patchowanego `ethtool 6.3`, który udostępnia także `ethtool --json -m` i może pokazywać więcej informacji dla wybranych modułów. Przed instalacją pobierz plik `ethtool-full-bin-6.3-r1.apk` z repozytorium lub jednego z dwóch mirrorów powyżej i skopiuj go do `/tmp`. Możesz także używać oficjalnych najnowszych wersji ethtool w wersjach >= 7.0, które otrzymały już także obsługę JSON, jednakże diagnostyka w niektórych przypadkach dla modułów SFP/SFP+/QSFP może być mniejsza niż wersji 6.3 z patch.
 
 ```sh
 apk del ethtool-full
