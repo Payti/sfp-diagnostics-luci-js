@@ -190,11 +190,11 @@ Pakiet został przetestowany na Banana Pi BPi-R3 z OpenWrt 25.12. W przypadku in
 ## Struktura
 
 ```text
-etc/sfp.json                              konfiguracja ścieżek debugfs
-usr/libexec/rpcd/sfp                      backend RPCD/UBus
-usr/share/luci/menu.d/...                 wpis menu LuCI
-usr/share/rpcd/acl.d/...                  uprawnienia ACL
-www/luci-static/resources/view/network/sfp.js  widok LuCI
+etc/sfp.json                              		konfiguracja ścieżek debugfs
+usr/libexec/rpcd/sfp                      		backend RPCD/UBus
+usr/share/luci/menu.d/...                 		wpis menu LuCI
+usr/share/rpcd/acl.d/...                  		uprawnienia ACL
+www/luci-static/resources/view/network/sfp.js  	widok LuCI
 ```
 
 ## Uwagi
