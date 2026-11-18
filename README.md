@@ -27,7 +27,7 @@ Historia projektu:
 ## Wymagania
 
 - Banana Pi BPi-R3 z OpenWrt 25.12,
-- pakiety `rpcd-mod-ucode`, `luci-mod-admin-full` i `libc`,
+- pakiety `rpcd-mod-ucode`, `luci-mod-admin-full`, `libc` i `jsonfilter`,
 - dostępne polecenie `ethtool` z obsługą `ethtool -m`,
 - zamontowany debugfs (`/sys/kernel/debug`),
 - interfejsy nazwane `sfp1` i `sfp2`.
