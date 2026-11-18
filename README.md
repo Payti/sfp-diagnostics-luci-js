@@ -185,7 +185,7 @@ Pakiet został przetestowany na Banana Pi BPi-R3 z OpenWrt 25.12. W przypadku in
 }
 ```
 
-Opcjonalny klucz `netdev` pozwala użyć diagnostyki na płycie, która nazywa porty SFP inaczej niż `sfp1`/`sfp2`. Backend czyta go przez `jsonfilter` (zależność deklarowana w Makefile); gdy klucza nie ma albo pliku nie ma, używana jest nazwa logiczna (`sfp1`/`sfp2`) — czyli zachowanie z poprzednich wersji pozostaje bez zmian. Klucze w odpowiedzi UBus nadal nazywają się `sfp1`/`sfp2`, więc widok JavaScript nie wymaga żadnych zmian.
+Opcjonalny klucz `netdev` pozwala użyć diagnostyki na płycie, która nazywa porty SFP inaczej niż `sfp1`/`sfp2`. Backend czyta go przez `jsonfilter` (zależność deklarowana w Makefile); gdy klucza nie ma albo pliku nie ma, używana jest nazwa logiczna (`sfp1`/`sfp2`) — czyli zachowanie z poprzednich wersji pozostaje bez zmian. Klucze w odpowiedzi UBUS nadal nazywają się `sfp1`/`sfp2`, więc widok JavaScript nie wymaga żadnych zmian.
 
 Przykład dla **Banana Pi BPi-R4** (slot WAN z wkładką XGS-PON LEOX LXE-010S-H oraz slot LAN podłączony kablem DAC; nazwy `sfp-wan` i `sfp-lan` pochodzą z DTS MediaTek):
 
