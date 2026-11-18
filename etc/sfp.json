@@ -1,6 +1,6 @@
 {
 	"sfp": {
-		"sfp1": { "debugfs": "/sys/kernel/debug/sfp-1/" },
-		"sfp2": { "debugfs": "/sys/kernel/debug/sfp-2/" }
+		"sfp1": { "debugfs": "/sys/kernel/debug/sfp-1/", "netdev": "sfp1" },
+		"sfp2": { "debugfs": "/sys/kernel/debug/sfp-2/", "netdev": "sfp2" }
 	}
 }

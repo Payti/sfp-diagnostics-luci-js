@@ -179,18 +179,33 @@ Pakiet został przetestowany na Banana Pi BPi-R3 z OpenWrt 25.12. W przypadku in
 ```json
 {
 	"sfp": {
-		"sfp1": { "debugfs": "/sys/kernel/debug/sfp-1/" },
-		"sfp2": { "debugfs": "/sys/kernel/debug/sfp-2/" }
+		"sfp1": { "debugfs": "/sys/kernel/debug/sfp-1/", "netdev": "sfp1" },
+		"sfp2": { "debugfs": "/sys/kernel/debug/sfp-2/", "netdev": "sfp2" }
 	}
 }
 ```
+
+Opcjonalny klucz `netdev` pozwala użyć diagnostyki na płycie, która nazywa porty SFP inaczej niż `sfp1`/`sfp2`. Backend czyta go przez `jsonfilter` (zależność deklarowana w Makefile); gdy klucza nie ma albo pliku nie ma, używana jest nazwa logiczna (`sfp1`/`sfp2`) — czyli zachowanie z poprzednich wersji pozostaje bez zmian. Klucze w odpowiedzi UBus nadal nazywają się `sfp1`/`sfp2`, więc widok JavaScript nie wymaga żadnych zmian.
+
+Przykład dla **Banana Pi BPi-R4** (slot WAN z wkładką XGS-PON LEOX LXE-010S-H oraz slot LAN podłączony kablem DAC; nazwy `sfp-wan` i `sfp-lan` pochodzą z DTS MediaTek):
+
+```json
+{
+	"sfp": {
+		"sfp1": { "debugfs": "/sys/kernel/debug/sfp1/", "netdev": "sfp-wan" },
+		"sfp2": { "debugfs": "/sys/kernel/debug/sfp2/", "netdev": "sfp-lan" }
+	}
+}
+```
+
+Uwaga: pola `debugfs` w tym pliku nie są obecnie używane przez backend — dane DDM pochodzą wyłącznie z `ethtool -m <netdev>`.
 
 Źródło dodatkowych informacji, wyników testów i historii projektu: [wpis na forum eko.one.pl](https://eko.one.pl/forum/viewtopic.php?pid=330336#p330336).
 
 ## Struktura
 
 ```text
-etc/sfp.json                              		konfiguracja ścieżek debugfs
+etc/sfp.json                              		mapowanie slotów na interfejsy (netdev) i ścieżki debugfs
 usr/libexec/rpcd/sfp                      		backend RPCD/UBus
 usr/share/luci/menu.d/...                 		wpis menu LuCI
 usr/share/rpcd/acl.d/...                  		uprawnienia ACL
