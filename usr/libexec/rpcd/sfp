@@ -1,10 +1,24 @@
 #!/bin/sh
 . /lib/functions.sh
 
+# Optional mapping from the logical slot names (sfp1/sfp2) used by the LuCI
+# view to the real netdev names. Some boards do not call their SFP interfaces
+# sfp1/sfp2 (e.g. BPI-R4 uses sfp-wan/sfp-lan). The mapping is read from
+# /etc/sfp.json; when the "netdev" key is absent, the logical name is used,
+# which keeps the original BPi-R3 behaviour unchanged.
+get_netdev() {
+    local logical="$1"
+    local netdev=""
+    if [ -f /etc/sfp.json ]; then
+        netdev=$(jsonfilter -q -i /etc/sfp.json -e "@.sfp['$logical'].netdev" 2>/dev/null)
+    fi
+    [ -n "$netdev" ] && echo "$netdev" || echo "$logical"
+}
+
 get_sfp_status() {
     local dev="$1"
     local raw=$(ethtool -m "$dev" 2>/dev/null)
-    
+
     if [ -z "$raw" ]; then
         echo "{}"
         return
@@ -69,12 +83,15 @@ case "$1" in
                 read -r input
                 interface=$(echo "$input" | sed -n 's/.*"interface":"\([^"]*\)".*/\1/p')
                 if [ "$interface" = "sfp1" ] || [ "$interface" = "sfp2" ]; then
-                    link_up=$(ip link show "$interface" 2>/dev/null | grep -q "LOWER_UP" && echo true || echo false)
-                    echo "{ \"$interface\": { \"ethtool\": $(get_sfp_status "$interface"), \"status\": { \"link_up\": $link_up } } }"
+                    dev=$(get_netdev "$interface")
+                    link_up=$(ip link show "$dev" 2>/dev/null | grep -q "LOWER_UP" && echo true || echo false)
+                    echo "{ \"$interface\": { \"ethtool\": $(get_sfp_status "$dev"), \"status\": { \"link_up\": $link_up } } }"
                 else
-                    s1_link=$(ip link show sfp1 2>/dev/null | grep -q "LOWER_UP" && echo true || echo false)
-                    s2_link=$(ip link show sfp2 2>/dev/null | grep -q "LOWER_UP" && echo true || echo false)
-                    echo "{ \"sfp1\": { \"ethtool\": $(get_sfp_status "sfp1"), \"status\": { \"link_up\": $s1_link } }, \"sfp2\": { \"ethtool\": $(get_sfp_status "sfp2"), \"status\": { \"link_up\": $s2_link } } }"
+                    dev1=$(get_netdev sfp1)
+                    dev2=$(get_netdev sfp2)
+                    s1_link=$(ip link show "$dev1" 2>/dev/null | grep -q "LOWER_UP" && echo true || echo false)
+                    s2_link=$(ip link show "$dev2" 2>/dev/null | grep -q "LOWER_UP" && echo true || echo false)
+                    echo "{ \"sfp1\": { \"ethtool\": $(get_sfp_status "$dev1"), \"status\": { \"link_up\": $s1_link } }, \"sfp2\": { \"ethtool\": $(get_sfp_status "$dev2"), \"status\": { \"link_up\": $s2_link } } }"
                 fi
             ;;
         esac

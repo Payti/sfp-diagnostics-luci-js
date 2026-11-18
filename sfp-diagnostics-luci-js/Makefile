@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=sfp-diagnostics-luci-js
 PKG_VERSION:=4
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/Payti/sfp-diagnostics-luci-js.git
@@ -18,7 +18,7 @@ define Package/sfp-diagnostics-luci-js
   CATEGORY:=LuCI
   SUBMENU:=Applications
   TITLE:=SFP diagnostics for LuCI
-  DEPENDS:=+rpcd-mod-ucode +luci-mod-admin-full +libc +ethtool-full
+  DEPENDS:=+rpcd-mod-ucode +luci-mod-admin-full +libc +ethtool-full +jsonfilter
   PKGARCH:=all
 endef
 
