@@ -18,7 +18,7 @@ define Package/sfp-diagnostics-luci-js
   CATEGORY:=LuCI
   SUBMENU:=Applications
   TITLE:=SFP diagnostics for LuCI
-  DEPENDS:=+rpcd-mod-ucode +luci-mod-admin-full +libc +ethtool-full
+  DEPENDS:=+rpcd +luci-base +libc +ethtool-full
   PKGARCH:=all
 endef
 
