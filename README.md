@@ -49,8 +49,8 @@ Dla OpenWrt 25.12 można użyć gotowego pakietu APK dla BPi-R3. Pakiet zawiera 
 apk update
 apk add rpcd-mod-ucode luci-mod-admin-full libc
 cd /tmp
-wget https://dl.eko.one.pl/test/sfp-diagnostics-luci-js-4-r1.apk
-apk add --allow-untrusted /tmp/sfp-diagnostics-luci-js-4-r1.apk
+wget https://github.com/Payti/sfp-diagnostics-luci-js/releases/download/18.11.2026-tag/sfp-diagnostics-luci-js-4-r3.apk
+apk add --allow-untrusted /tmp/sfp-diagnostics-luci-js-4-r3.apk
 apk add ethtool-full
 rm -rf /tmp/luci-modulecache
 /etc/init.d/rpcd restart
