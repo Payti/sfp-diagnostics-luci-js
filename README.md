@@ -209,7 +209,7 @@ etc/sfp.json                              		mapowanie slotów na interfejsy (net
 usr/libexec/rpcd/sfp                      		backend RPCD/UBus
 usr/share/luci/menu.d/...                 		wpis menu LuCI
 usr/share/rpcd/acl.d/...                  		uprawnienia ACL
-www/luci-static/resources/view/network/sfp.js  	widok LuCI
+www/luci-static/resources/view/network/sfp.js   widok LuCI
 ```
 
 ## Uwagi
